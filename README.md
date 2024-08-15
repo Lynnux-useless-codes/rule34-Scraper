@@ -1,4 +1,4 @@
-# rule34-downloader
+# rule34-Scraper
 
 A flexible script for downloading images from the Rule34 API. The script supports configuration via command-line arguments or a YAML configuration file and provides options for specifying tags, download limits, and more.
 
@@ -35,7 +35,7 @@ A flexible script for downloading images from the Rule34 API. The script support
 
 ```bash
 git clone https://github.com/Lynnux-useless-codes/rule34-Scraper.git
-cd rule34-downlaoder
+cd rule34-Scraper
 ```
 
 2. Ensure you have `curl` and `jq` installed on your system:
