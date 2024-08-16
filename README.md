@@ -57,7 +57,7 @@ brew install curl jq
 3. Make the script executable:
 
 ```bash
-chmod +x downlaoder.sh
+chmod +x downloader.sh
 ```
 
 ## Usage
@@ -76,13 +76,13 @@ You can run the downloader either by specifying command-line arguments or using 
 1. Download images with specific tags and limit by amount:
 
 ```bash
-./downlaoder.sh "anime girl" --amount 25
+./downloader.sh "anime girl" --amount 25
 ```
 
 2. Download images using a configuration file:
 
 ```bash
-./downlaoder.sh --config config.yaml
+./downloader.sh --config config.yaml
 ```
 
 ## Configuration File
