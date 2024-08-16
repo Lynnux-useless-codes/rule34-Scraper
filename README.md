@@ -103,13 +103,15 @@ image_folder: "downloads"
 amount: 25
 ```
 
-Note: If both `--amount` and `--pages` are specified, `--amount` takes precedence.
-
 ## Options
 
 - `--amount`: Total number of images to download.
 - `--pages`: Number of pages to fetch.
 - `--config`: Path to YAML configuration file.
+- `--only-videos`: Only downloads videos/gifs.
+- `--only-images`: Only downlaods image files.
+
+Note: If both `--amount` and `--pages` are specified, `--amount` takes precedence.
 
 ## Troubleshooting
 
