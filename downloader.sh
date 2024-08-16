@@ -35,7 +35,6 @@ log_debug() {
   fi
 }
 
-
 urlencode() {
   local raw="$1"
   local encoded=""
@@ -51,7 +50,7 @@ urlencode() {
   echo "$encoded"
 }
 
-download_image() {
+download_file() {
   local file_url="$1"
   local file_name="$2"
   local post_id="$3"
@@ -60,10 +59,26 @@ download_image() {
 
   if [ $? -ne 0 ]; then
     log_error "Failed to download ${file_name} (Post ID: $post_id)"
-
   else
     log_success "Successfully downloaded ${file_name} (Post ID: $post_id)"
   fi
+}
+
+handle_file() {
+  local file_url="$1"
+  local post_id="$2"
+  local file_name=$(basename "$file_url")
+
+  local file_ext="${file_name##*.}"
+  case "$file_ext" in
+    jpg|jpeg|png|gif|mp4|webm)
+      log_info "Downloading $file_name | Post ID: $post_id"
+      download_file "$file_url" "$file_name" "$post_id"
+      ;;
+    *)
+      log_warning "Skipping unsupported file format: $file_name"
+      ;;
+  esac
 }
 
 download_images_by_amount() {
@@ -102,21 +117,19 @@ download_images_by_amount() {
     echo "$response" | jq -c '.[]' | while read -r post; do
       post_id=$(echo "$post" | jq -r '.id')
       file_url=$(echo "$post" | jq -r '.file_url')
-      file_name=$(basename "$file_url")
 
-      log_info "Preparing $file_name | page $page | post $post_id"
+      log_info "Preparing file | page $page | post $post_id"
 
       while [ "$(jobs | wc -l)" -ge "$MAX_THREADS" ]; do
         sleep 1
       done
 
-      download_image "$file_url" "$file_name" "$post_id" &
+      handle_file "$file_url" "$post_id" &
     done
 
     wait
 
     total_downloaded=$((total_downloaded + limit))
-
     page=$((page + 1))
   done
 }
@@ -148,15 +161,14 @@ download_images_by_pages() {
     echo "$response" | jq -c '.[]' | while read -r post; do
       post_id=$(echo "$post" | jq -r '.id')
       file_url=$(echo "$post" | jq -r '.file_url')
-      file_name=$(basename "$file_url")
 
-      log_info "Preparing to download ${file_name} | page $page | post $post_id"
+      log_info "Preparing to download | page $page | post $post_id"
 
       while [ "$(jobs | wc -l)" -ge "$MAX_THREADS" ]; do
         sleep 1
       done
 
-      download_image "$file_url" "$file_name" "$post_id" &
+      handle_file "$file_url" "$post_id" &
     done
 
     wait
