@@ -12,6 +12,8 @@ timestamp() {
 }
 
 DEBUG=false
+ONLY_VIDEOS=false
+ONLY_IMAGES=false
 
 log_info() {
   echo -e "${GREEN}$(timestamp) ${WHITE}[${BLUE}INFO${WHITE}]${RESET} $1"
@@ -70,15 +72,19 @@ handle_file() {
   local file_name=$(basename "$file_url")
 
   local file_ext="${file_name##*.}"
-  case "$file_ext" in
-    jpg|jpeg|png|gif|mp4|webm)
-      log_info "Downloading $file_name | Post ID: $post_id"
-      download_file "$file_url" "$file_name" "$post_id"
-      ;;
-    *)
-      log_warning "Skipping unsupported file format: $file_name"
-      ;;
-  esac
+
+  if [ "$ONLY_IMAGES" = true ] && [[ "$file_ext" =~ ^(jpg|jpeg|png|gif)$ ]]; then
+    log_info "Downloading image $file_name | Post ID: $post_id"
+    download_file "$file_url" "$file_name" "$post_id"
+  elif [ "$ONLY_VIDEOS" = true ] && [[ "$file_ext" =~ ^(mp4|webm|gif)$ ]]; then
+    log_info "Downloading video/GIF $file_name | Post ID: $post_id"
+    download_file "$file_url" "$file_name" "$post_id"
+  elif [ "$ONLY_IMAGES" = false ] && [ "$ONLY_VIDEOS" = false ]; then
+    log_info "Downloading $file_name | Post ID: $post_id"
+    download_file "$file_url" "$file_name" "$post_id"
+  else
+    log_warning "Skipping $file_name (Not matching filters)"
+  fi
 }
 
 download_images_by_amount() {
@@ -209,6 +215,14 @@ while [[ $# -gt 0 ]]; do
     --amount)
       AMOUNT="$2"
       shift
+      shift
+      ;;
+    --only-videos)
+      ONLY_VIDEOS=true;
+      shift
+      ;;
+    --only-images)
+      ONLY_IMAGES=true;
       shift
       ;;
     *)
