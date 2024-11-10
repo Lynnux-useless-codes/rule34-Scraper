@@ -108,6 +108,7 @@ amount: 25
 - `--amount`: Total number of images to download.
 - `--pages`: Number of pages to fetch.
 - `--config`: Path to YAML configuration file.
+- `--cach-hash`: Make a text file where it saves hashes. (if command is used again it will skip files that are already cached)
 - `--only-videos`: Only downloads videos/gifs.
 - `--only-images`: Only downlaods image files.
 
