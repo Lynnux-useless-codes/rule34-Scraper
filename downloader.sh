@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# set -x
+
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
@@ -14,6 +16,8 @@ timestamp() {
 DEBUG=false
 ONLY_VIDEOS=false
 ONLY_IMAGES=false
+CACHE_HASH=false
+CACHE_FILE="cache_hashes.txt"
 
 log_info() {
   echo -e "${GREEN}$(timestamp) ${WHITE}[${BLUE}INFO${WHITE}]${RESET} $1"
@@ -52,6 +56,23 @@ urlencode() {
   echo "$encoded"
 }
 
+calculate_hash() {
+  local file="$1"
+  sha256sum "$file" | awk '{print $1}'
+}
+
+update_cache() {
+  local file="$1"
+  local hash="$2"
+  echo "$hash  $file" >> "$CACHE_FILE"
+}
+
+is_cached() {
+  local file="$1"
+  local hash="$2"
+  grep -q "$hash  $file" "$CACHE_FILE"
+}
+
 download_file() {
   local file_url="$1"
   local file_name="$2"
@@ -61,9 +82,13 @@ download_file() {
 
   if [ $? -ne 0 ]; then
     log_error "Failed to download ${file_name} (Post ID: $post_id)"
-  else
-    log_success "Successfully downloaded ${file_name} (Post ID: $post_id)"
+    return 1
   fi
+
+  log_success "Successfully downloaded ${file_name} (Post ID: $post_id)"
+
+  local file_hash=$(calculate_hash "${IMAGE_FOLDER}/${file_name}")
+  update_cache "$file_name" "$file_hash"
 }
 
 handle_file() {
@@ -72,6 +97,17 @@ handle_file() {
   local file_name=$(basename "$file_url")
 
   local file_ext="${file_name##*.}"
+
+  if [ "$CACHE_HASH" = true ]; then
+    local temp_file="${IMAGE_FOLDER}/${file_name}"
+    if [ -f "$temp_file" ]; then
+      local file_hash=$(calculate_hash "$temp_file")
+      if is_cached "$file_name" "$file_hash"; then
+        log_info "File $file_name is already downloaded and cached. Skipping."
+        return
+      fi
+    fi
+  fi
 
   if [ "$ONLY_IMAGES" = true ] && [[ "$file_ext" =~ ^(jpg|jpeg|png|gif)$ ]]; then
     log_info "Downloading image $file_name | Post ID: $post_id"
@@ -225,6 +261,10 @@ while [[ $# -gt 0 ]]; do
       ONLY_IMAGES=true;
       shift
       ;;
+    --cache-hash)
+      CACHE_HASH=true;
+      shift
+      ;;
     *)
       if [ -z "$TAGS" ]; then
         TAGS="$1"
@@ -264,6 +304,11 @@ fi
 if [ -z "$AMOUNT" ] && [ -z "$PAGES" ]; then
   log_error "Either --amount or --pages must be specified."
   exit 1
+fi
+
+if [ "$CACHE_HASH" = true ]; then
+  # Ensure cache file exists
+  touch "$CACHE_FILE"
 fi
 
 if [ ! -z "$PAGES" ]; then
