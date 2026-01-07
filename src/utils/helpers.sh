@@ -58,6 +58,7 @@ show_help() {
   echo -e "  ${YELLOW}--cache-hash${RESET}       Check for existing hashes in $CACHE_FILE"
   echo -e "  ${YELLOW}--api-key <key>${RESET}    Set API key for rule34.xxx"
   echo -e "  ${YELLOW}--user-id <id>${RESET}     Set User ID for rule34.xxx"
+  echo -e "  ${YELLOW}--site <site>${RESET}      Set site to scrape (default: rule34, options: rule34, xbooru)"
   echo ""
   echo -e "${BLUE}Note:${RESET} You can find your API key and User ID at:"
   echo -e "${YELLOW}https://rule34.xxx/index.php?page=account&s=options${RESET}"

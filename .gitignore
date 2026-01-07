@@ -1,6 +1,7 @@
-downloaded
-downloads
-found
+downloaded/
+downloads/
+found/
+test_*/
 
 cache_hashes.txt
 config.yaml

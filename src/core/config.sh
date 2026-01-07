@@ -10,6 +10,7 @@ API_KEY="d6a2a402d8df19624e0dab8297f7856eb66e4af291b359236870a775f59b90821b96656
 USER_ID="2961491"
 MAX_THREADS=5
 IMAGE_FOLDER="downloads"
+SITE="rule34"
 
 # Initialize optional variables
 TAGS=""
@@ -23,6 +24,7 @@ CLI_THREADS_PROVIDED="false"
 CLI_FOLDER_PROVIDED="false"
 CLI_API_KEY_PROVIDED="false"
 CLI_USER_ID_PROVIDED="false"
+CLI_SITE_PROVIDED="false"
 
 parse_yaml() {
   local file="$1"
@@ -45,6 +47,7 @@ parse_yaml() {
       "amount") [[ "$CLI_AMOUNT_PROVIDED" == "false" ]] && AMOUNT="$value" ;;
       "api_key") [[ "$CLI_API_KEY_PROVIDED" == "false" ]] && API_KEY="$value" ;;
       "user_id") [[ "$CLI_USER_ID_PROVIDED" == "false" ]] && USER_ID="$value" ;;
+      "site") [[ "$CLI_SITE_PROVIDED" == "false" ]] && SITE="$value" ;;
     esac
   done < "$file"
 }

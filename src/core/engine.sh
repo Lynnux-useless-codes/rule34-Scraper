@@ -79,7 +79,7 @@ process_posts() {
     exit 1
   fi
 
-  echo "$response" | jq -c '.[]' | while read -r post; do
+  while read -r post; do
     local post_id
     local file_url
     post_id=$(echo "$post" | jq -r '.id')
@@ -97,7 +97,7 @@ process_posts() {
     done
 
     handle_file "$file_url" "$post_id" &
-  done
+  done < <(echo "$response" | jq -c '.[]')
   wait
 }
 
@@ -121,7 +121,8 @@ download_images_by_amount() {
       limit=$per_page_limit
     fi
 
-    local url="https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&limit=$limit&pid=$((page - 1))&tags=$encoded_tags&json=1&api_key=$API_KEY&user_id=$USER_ID"
+    local url
+    url=$(get_api_url "$limit" "$((page - 1))" "$encoded_tags")
     log_debug "Fetching URL: $url"
     
     local response
@@ -157,7 +158,8 @@ download_images_by_pages() {
   mkdir -p "$IMAGE_FOLDER"
 
   for (( page=1; page<=end_page; page++ )); do
-    local url="https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&limit=$per_page_limit&pid=$((page - 1))&tags=$encoded_tags&json=1&api_key=$API_KEY&user_id=$USER_ID"
+    local url
+    url=$(get_api_url "$per_page_limit" "$((page - 1))" "$encoded_tags")
     log_debug "Fetching URL: $url"
     
     local response

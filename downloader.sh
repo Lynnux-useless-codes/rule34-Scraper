@@ -5,11 +5,13 @@ set -euo pipefail
 
 cleanup() {
   local code=$?
-  local pids
-  pids=$(jobs -p)
-  if [[ -n "$pids" ]]; then
-    log_warning "Interrupted. Cleaning up background jobs..."
-    kill $pids 2>/dev/null
+  if [[ $code -ne 0 ]]; then
+    local pids
+    pids=$(jobs -p)
+    if [[ -n "$pids" ]]; then
+      log_warning "Interrupted. Cleaning up background jobs..."
+      kill $pids 2>/dev/null
+    fi
   fi
   exit $code
 }
@@ -104,6 +106,12 @@ while [[ $# -gt 0 ]]; do
       shift
       shift
       ;;
+    --site)
+      SITE="$2"
+      CLI_SITE_PROVIDED="true"
+      shift
+      shift
+      ;;
     *)
       if [[ "$CLI_TAGS_PROVIDED" == "false" ]]; then
         TAGS="$1"
@@ -128,6 +136,15 @@ fi
 
 if [[ "$CACHE_HASH" == "true" ]]; then
   touch "$CACHE_FILE"
+fi
+
+# Load site driver
+SITE_DRIVER="${SCRIPT_DIR}/src/sites/${SITE}.sh"
+if [[ -f "$SITE_DRIVER" ]]; then
+  source "$SITE_DRIVER"
+else
+  log_error "Site driver for '${SITE}' not found at ${SITE_DRIVER}"
+  exit 1
 fi
 
 if [[ -n "$PAGES" ]]; then
