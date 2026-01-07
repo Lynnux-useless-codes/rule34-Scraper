@@ -1,0 +1,6 @@
+tags: "solo high_res"
+max_threads: 5
+image_folder: "downloads"
+amount: 50
+api_key: "your_api_key_here"
+user_id: "your_user_id_here"
