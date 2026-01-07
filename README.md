@@ -1,6 +1,6 @@
-# rule34-Scraper
+# Booru-Scraper
 
-A powerful, modular, and fast bash-based scraper for [rule34.xxx](https://rule34.xxx) that supports multi-threaded downloads, filtering, and caching.
+A powerful, modular, and fast bash-based scraper for multiple Booru-style imageboards. It supports multi-threaded downloads, filtering, and caching across various sites with [rule34.xxx](https://rule34.xxx) as the default.
 
 ## 🚀 Features
 
@@ -23,8 +23,8 @@ Ensure you have the following installed:
 ## 🛠️ Installation
 
 ```bash
-git clone https://github.com/lynnux-useless-codes/rule34-Scraper.git
-cd rule34-Scraper
+git clone https://github.com/lynnux-useless-codes/Booru-Scraper.git
+cd Booru-Scraper
 chmod +x downloader.sh
 ```
 
@@ -46,12 +46,13 @@ chmod +x downloader.sh
 - `--only-videos`: Only download videos and GIFs.
 - `--only-images`: Only download images (jpg, jpeg, png, gif).
 - `--cache-hash`: Enable SHA-256 hash checking to skip already downloaded files.
-- `--api-key <key>`: Provide your API key.
-- `--user-id <id>`: Provide your User ID.
+- `--api-key <key>`: API key for the selected site (e.g., rule34.xxx or gelbooru.com).
+- `--user-id <id>`: User ID for the selected site.
+- `--site <name>`: Site to scrape (default: `rule34`). Supported: `rule34`, `xbooru`, `hypnohub`, `konachan`, `safebooru`, etc.
 
 > [!IMPORTANT]
-> You need your user ID and API key to use the rule34.xxx API.
-> You can obtain them by going to [rule34.xxx](https://rule34.xxx/index.php?page=account&s=options).
+> Sites like rule34.xxx and gelbooru.com require a User ID and API key.
+> You can typically find these in your account options/settings on the respective site.
 
 ### Config File (`config.yaml`)
 You can also use a YAML file for persistent settings:
@@ -60,8 +61,10 @@ tags: "solo high_res"
 max_threads: 10
 image_folder: "my_downloads"
 amount: 50
-api_key: "your_api_key_here"
-user_id: "your_user_id_here"
+rule34_api_key: "your_r34_key"
+rule34_user_id: "your_r34_id"
+gelbooru_api_key: "your_gelbooru_key"
+gelbooru_user_id: "your_gelbooru_id"
 ```
 
 ## 📂 Project Structure

@@ -141,6 +141,9 @@ fi
 # Load site driver
 SITE_DISABLED=false
 SITE_DISABLED_REASON="This site is currently disabled."
+extract_posts() {
+  echo "$1" | jq -c '.[]'
+}
 SITE_DRIVER="${SCRIPT_DIR}/src/sites/${SITE}.sh"
 if [[ -f "$SITE_DRIVER" ]]; then
   source "$SITE_DRIVER"

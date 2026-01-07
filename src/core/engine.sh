@@ -67,16 +67,9 @@ process_posts() {
     return
   fi
 
-  # Validate JSON and ensure it's an array
-  if ! echo "$response" | jq -e 'type == "array"' >/dev/null 2>&1; then
-    if echo "$response" | grep -q "Missing authentication"; then
-       log_error "Authentication failed! Your --api-key or --user-id might be incorrect."
-       log_error "You can find your credentials at: https://rule34.xxx/index.php?page=account&s=options"
-    else
-       log_error "Invalid response received for page $page. Expected a JSON array."
-       log_debug "Raw response: $response"
-    fi
-    exit 1
+  if [[ -z "$response" ]]; then
+    log_warning "Empty response for page $page. Skipping."
+    return
   fi
 
   while read -r post; do
@@ -97,7 +90,7 @@ process_posts() {
     done
 
     handle_file "$file_url" "$post_id" &
-  done < <(echo "$response" | jq -c '.[]')
+  done < <(extract_posts "$response")
   wait
 }
 

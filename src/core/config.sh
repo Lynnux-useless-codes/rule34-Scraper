@@ -6,8 +6,12 @@ ONLY_VIDEOS=false
 ONLY_IMAGES=false
 CACHE_HASH=false
 CACHE_FILE="cache_hashes.txt"
-API_KEY="d6a2a402d8df19624e0dab8297f7856eb66e4af291b359236870a775f59b90821b96656e3a8fa485a486d93f337b3a244c790f3bb371f25f584c8cc83a60ad2b"
-USER_ID="2961491"
+API_KEY=""
+USER_ID=""
+RULE34_API_KEY=""
+RULE34_USER_ID=""
+GELBOORU_API_KEY=""
+GELBOORU_USER_ID=""
 MAX_THREADS=5
 IMAGE_FOLDER="downloads"
 SITE="rule34"
@@ -48,6 +52,10 @@ parse_yaml() {
       "api_key") [[ "$CLI_API_KEY_PROVIDED" == "false" ]] && API_KEY="$value" ;;
       "user_id") [[ "$CLI_USER_ID_PROVIDED" == "false" ]] && USER_ID="$value" ;;
       "site") [[ "$CLI_SITE_PROVIDED" == "false" ]] && SITE="$value" ;;
+      "rule34_api_key") RULE34_API_KEY="$value" ;;
+      "rule34_user_id") RULE34_USER_ID="$value" ;;
+      "gelbooru_api_key") GELBOORU_API_KEY="$value" ;;
+      "gelbooru_user_id") GELBOORU_USER_ID="$value" ;;
     esac
   done < "$file"
 }

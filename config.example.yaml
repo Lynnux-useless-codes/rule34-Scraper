@@ -2,5 +2,10 @@ tags: "solo high_res"
 max_threads: 5
 image_folder: "downloads"
 amount: 50
-api_key: "your_api_key_here"
-user_id: "your_user_id_here"
+
+# Site-specific credentials (overrides defaults)
+rule34_api_key: "..."
+rule34_user_id: "..."
+
+gelbooru_api_key: "..."
+gelbooru_user_id: "..."
