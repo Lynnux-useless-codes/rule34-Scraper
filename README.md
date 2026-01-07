@@ -1,128 +1,85 @@
 # rule34-Scraper
 
-A flexible script for downloading images from the Rule34 API. The script supports configuration via command-line arguments or a YAML configuration file and provides options for specifying tags, download limits, and more.
+A powerful, modular, and fast bash-based scraper for [rule34.xxx](https://rule34.xxx) that supports multi-threaded downloads, filtering, and caching.
 
-- [rule34-downloader](#rule34-downloader)
-  - [Features](#features)
-  - [Requirements](#requirements)
-  - [Installation](#installation)
-  - [Usage](#usage)
-    - [Command-Line Arguments](#command-line-arguments)
-    - [Examples](#examples)
-  - [Configuration File](#configuration-file)
-    - [Example config.yaml:](#example-configyaml)
-  - [Options](#options)
-  - [Troubleshooting](#troubleshooting)
-  - [Contribution](#contribution)
-  - [License](#license)
+## 🚀 Features
 
-## Features
+- **Multi-threaded**: Download multiple files simultaneously for maximum speed.
+- **Modular Architecture**: Clean code structure with separate modules for logging, utilities, config, and core engine.
+- **Advanced Filtering**: Choose to download only images, only videos/GIFs, or everything.
+- **Smart Caching**: Optional SHA-256 hash-based caching to avoid re-downloading existing files.
+- **Flexible Configuration**: Support for both command-line arguments and YAML-based config files.
+- **Beautiful Logs**: Color-coded, timestamped logging for easy monitoring.
 
-- Flexible Tagging: Download images based on specified tags.
-- Configurable Limits: Set limits on the number of images or pages to download.
-- Multithreading: Download multiple images simultaneously with configurable thread limits.
-- Configurable: Use a YAML configuration file for settings or specify them via command-line arguments.
+## 📋 Prerequisites
 
-## Requirements
+Ensure you have the following installed:
 
-- **bash**: Required for running the script
-- **cURL**: Used for making HTTP requests.
-- **jq**: A command-line JSON processor to parse and handle API responses.
+- `bash` (v4.0+)
+- `curl`
+- `jq`
+- `sha256sum` (usually part of `coreutils`)
 
-## Installation
-
-1. Clone the repository:
+## 🛠️ Installation
 
 ```bash
-git clone https://github.com/Lynnux-useless-codes/rule34-Scraper.git
+git clone https://github.com/lynnux-useless-codes/rule34-Scraper.git
 cd rule34-Scraper
-```
-
-2. Ensure you have `curl` and `jq` installed on your system:
-
-```bash
-# For Debian/Ubuntu
-sudo apt install curl jq
-
-# Arch Linux
-sudo pacman -S curl jq
-
-# Other Linux Distributions
-sudo dnf install curl jq
-
-# For macOS (with Homebrew)
-brew install curl jq
-```
-
-3. Make the script executable:
-
-```bash
 chmod +x downloader.sh
 ```
 
-## Usage
+## 📖 Usage
 
-You can run the downloader either by specifying command-line arguments or using a configuration file.
-
-### Command-Line Arguments
-
-- `tags` (Required): The tags to search for. Enclose in quotes if it contains spaces.
-- `--amount` (Optional): The total number of images to download.
-- `--pages` (Optional): The number of pages to fetch.
-- `--config` (Optional): Path to a YAML configuration file.
-
-### Examples
-
-1. Download images with specific tags and limit by amount:
+### Command Line
 
 ```bash
-./downloader.sh "anime girl" --amount 25
+./downloader.sh [options] "tags"
 ```
 
-2. Download images using a configuration file:
+#### Options
 
-```bash
-./downloader.sh --config config.yaml
-```
+- `-h, --help`: Show help message and exit.
+- `--debug`: Enable verbose debug logging.
+- `--config <file>`: Path to a YAML configuration file.
+- `--pages <count>`: Number of pages to download from the API.
+- `--amount <count>`: Total number of images to download.
+- `--only-videos`: Only download videos and GIFs.
+- `--only-images`: Only download images (jpg, jpeg, png, gif).
+- `--cache-hash`: Enable SHA-256 hash checking to skip already downloaded files.
+- `--api-key <key>`: Provide your API key.
+- `--user-id <id>`: Provide your User ID.
 
-## Configuration File
+> [!IMPORTANT]
+> You need your user ID and API key to use the rule34.xxx API.
+> You can obtain them by going to [rule34.xxx](https://rule34.xxx/index.php?page=account&s=options).
 
-You can specify a YAML configuration file with the following options:
-
-- `tags`: Tags for the search (e.g., "anime girl").
-- `max_threads`: Maximum number of simultaneous downloads (default is 5).
-- `image_folder`: Directory to save the images (./default is downloaded).
-- `amount`: Total number of images to download (if not using --pages).
-
-### Example config.yaml:
-
+### Config File (`config.yaml`)
+You can also use a YAML file for persistent settings:
 ```yaml
-tags: "anime girl"
+tags: "solo high_res"
 max_threads: 10
-image_folder: "downloads"
-amount: 25
+image_folder: "my_downloads"
+amount: 50
+api_key: "your_api_key_here"
+user_id: "your_user_id_here"
 ```
 
-## Options
+## 📂 Project Structure
 
-- `--amount`: Total number of images to download.
-- `--pages`: Number of pages to fetch.
-- `--config`: Path to YAML configuration file.
-- `--cach-hash`: Make a text file where it saves hashes. (if command is used again it will skip files that are already cached)
-- `--only-videos`: Only downloads videos/gifs.
-- `--only-images`: Only downlaods image files.
+```text
+.
+├── downloader.sh       # Main entry point
+├── config.yaml         # Example configuration
+├── LICENSE             # Unlicense (Public Domain)
+└── src/
+    ├── core/
+    │   ├── config.sh   # Configuration & Defaults
+    │   └── engine.sh   # Core downloading logic
+    └── utils/
+        ├── helpers.sh  # Utility functions
+        └── logger.sh   # Logging & UI colors
+```
 
-Note: If both `--amount` and `--pages` are specified, `--amount` takes precedence.
+## 📜 License
 
-## Troubleshooting
-
-- **Empty Response**: If you encounter empty responses, ensure the tags are correctly specified and try different tags or limits.
-- **Invalid Config File**: Verify that the YAML configuration file is correctly formatted and paths are valid.
-
-## Contribution
-
-Contributions are welcome! Please open an issue or submit a pull request for any features or bug fixes.
-
-## License
-
-This project is licensed under the [MIT License](/LICENSE).
+This project is released into the public domain under the [Unlicense](LICENSE).
