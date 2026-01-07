@@ -139,11 +139,19 @@ if [[ "$CACHE_HASH" == "true" ]]; then
 fi
 
 # Load site driver
+SITE_DISABLED=false
+SITE_DISABLED_REASON="This site is currently disabled."
 SITE_DRIVER="${SCRIPT_DIR}/src/sites/${SITE}.sh"
 if [[ -f "$SITE_DRIVER" ]]; then
   source "$SITE_DRIVER"
 else
   log_error "Site driver for '${SITE}' not found at ${SITE_DRIVER}"
+  exit 1
+fi
+
+if [[ "$SITE_DISABLED" == "true" ]]; then
+  log_error "Site '${SITE}' is disabled."
+  log_error "Reason: ${SITE_DISABLED_REASON}"
   exit 1
 fi
 
