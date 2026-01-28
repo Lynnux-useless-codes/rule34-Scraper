@@ -24,6 +24,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/src/utils/logger.sh"
 source "${SCRIPT_DIR}/src/core/config.sh"
 source "${SCRIPT_DIR}/src/utils/helpers.sh"
+source "${SCRIPT_DIR}/src/utils/progress.sh"
 source "${SCRIPT_DIR}/src/core/engine.sh"
 
 check_dependencies
@@ -122,6 +123,11 @@ while [[ $# -gt 0 ]]; do
     --thumbnail)
       DOWNLOAD_THUMBNAILS=true
       CLI_THUMBNAILS_PROVIDED="true"
+      shift
+      ;;
+    --verbose)
+      VERBOSE=true
+      CLI_VERBOSE_PROVIDED="true"
       shift
       ;;
     *)

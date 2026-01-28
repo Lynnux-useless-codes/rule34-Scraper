@@ -40,6 +40,7 @@ chmod +x downloader.sh
 
 - `-h, --help`: Show help message and exit.
 - `--debug`: Enable verbose debug logging.
+- `--verbose`: Enable verbose logging (restores detailed text logs and disables progress bar).
 - `--config <file>`: Path to a YAML configuration file.
 - `--pages <count>`: Number of pages to download from the API.
 - `--amount <count>`: Total number of images to download.

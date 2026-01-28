@@ -56,6 +56,10 @@ handle_file() {
   else
     log_warning "Skipping $file_name (Not matching filters)"
   fi
+  
+  if [[ "${VERBOSE:-false}" == "false" ]]; then
+    update_progress
+  fi
 }
 
 process_posts() {
@@ -108,6 +112,10 @@ download_images_by_amount() {
   encoded_tags=$(urlencode "$tags")
 
   mkdir -p "$IMAGE_FOLDER"
+  
+  if [[ "${VERBOSE:-false}" == "false" ]]; then
+    init_progress "$total_limit"
+  fi
 
   local total_downloaded=0
   local page=1
@@ -136,6 +144,10 @@ download_images_by_amount() {
       if [[ "$http_code" == "429" ]]; then
         log_error "You are being rate limited. Please wait before running again."
       fi
+      
+      if [[ "${VERBOSE:-false}" == "false" ]]; then
+          finish_progress
+      fi
       exit 1
     fi
 
@@ -145,6 +157,10 @@ download_images_by_amount() {
     total_downloaded=$((total_downloaded + limit))
     ((page++))
   done
+  
+  if [[ "${VERBOSE:-false}" == "false" ]]; then
+      finish_progress
+  fi
 }
 
 download_images_by_pages() {
@@ -155,6 +171,11 @@ download_images_by_pages() {
   encoded_tags=$(urlencode "$tags")
 
   mkdir -p "$IMAGE_FOLDER"
+  
+  if [[ "${VERBOSE:-false}" == "false" ]]; then
+      # Estimate total items
+      init_progress $((end_page * per_page_limit))
+  fi
 
   for (( page=1; page<=end_page; page++ )); do
     local url
@@ -169,10 +190,17 @@ download_images_by_pages() {
 
     if [[ "$http_code" != "200" ]]; then
       log_error "API request failed with HTTP $http_code for page $page."
+      if [[ "${VERBOSE:-false}" == "false" ]]; then
+          finish_progress
+      fi
       exit 1
     fi
 
     log_info "Received response from API (Page $page)"
     process_posts "$response" "$page"
   done
+  
+  if [[ "${VERBOSE:-false}" == "false" ]]; then
+      finish_progress
+  fi
 }

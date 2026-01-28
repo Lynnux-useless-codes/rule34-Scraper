@@ -13,11 +13,15 @@ timestamp() {
 }
 
 log_info() {
-  echo -e "${GREEN}$(timestamp) ${WHITE}[${BLUE}INFO${WHITE}]${RESET} $1"
+  if [[ "${VERBOSE:-false}" == "true" ]]; then
+    echo -e "${GREEN}$(timestamp) ${WHITE}[${BLUE}INFO${WHITE}]${RESET} $1"
+  fi
 }
 
 log_success() {
-  echo -e "${GREEN}$(timestamp) ${WHITE}[${GREEN}SUCCESS${WHITE}]${RESET} $1"
+  if [[ "${VERBOSE:-false}" == "true" ]]; then
+    echo -e "${GREEN}$(timestamp) ${WHITE}[${GREEN}SUCCESS${WHITE}]${RESET} $1"
+  fi
 }
 
 log_warning() {
@@ -29,7 +33,7 @@ log_error() {
 }
 
 log_debug() {
-  if [ "$DEBUG" = true ]; then
+  if [[ "${DEBUG:-false}" == "true" ]]; then
     echo -e "${GREEN}$(timestamp) ${WHITE}[DEBUG]${RESET} $1"
   fi
 }

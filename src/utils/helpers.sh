@@ -48,6 +48,7 @@ show_help() {
   echo -e "${BLUE}Options:${RESET}"
   echo -e "  ${YELLOW}-h, --help${RESET}         Show this help message"
   echo -e "  ${YELLOW}--debug${RESET}            Enable debug logging"
+  echo -e "  ${YELLOW}--verbose${RESET}          Enable verbose logging (disable progress bar)"
   echo -e "  ${YELLOW}--config <file>${RESET}    Path to YAML configuration file"
   echo -e "  ${YELLOW}--pages <count>${RESET}    Number of pages to download"
   echo -e "  ${YELLOW}--amount <count>${RESET}   Total number of images to download"
