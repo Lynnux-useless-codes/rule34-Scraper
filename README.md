@@ -56,7 +56,7 @@ chmod +x downloader.sh
 > You can typically find these in your account options/settings on the respective site.
 
 ### Config File (`config.yaml`)
-You can also use a YAML file for persistent settings:
+If a `config.yaml` exists in the local directory, it will be automatically loaded as default. You can also specify a custom path:
 ```yaml
 tags: "solo high_res"
 max_threads: 10

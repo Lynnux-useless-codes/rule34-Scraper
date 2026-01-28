@@ -28,6 +28,13 @@ source "${SCRIPT_DIR}/src/core/engine.sh"
 
 check_dependencies
 
+# Autodetect config.yaml
+if [[ -f "config.yaml" ]]; then
+  parse_yaml "config.yaml"
+elif [[ -f "${SCRIPT_DIR}/config.yaml" ]]; then
+  parse_yaml "${SCRIPT_DIR}/config.yaml"
+fi
+
 # Look for config file
 for arg in "$@"; do
   if [[ "$arg" == "--config" ]]; then
