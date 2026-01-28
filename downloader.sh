@@ -112,6 +112,11 @@ while [[ $# -gt 0 ]]; do
       shift
       shift
       ;;
+    --thumbnail)
+      DOWNLOAD_THUMBNAILS=true
+      CLI_THUMBNAILS_PROVIDED="true"
+      shift
+      ;;
     *)
       if [[ "$CLI_TAGS_PROVIDED" == "false" ]]; then
         TAGS="$1"

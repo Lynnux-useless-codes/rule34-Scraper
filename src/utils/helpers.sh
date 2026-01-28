@@ -55,6 +55,7 @@ show_help() {
   echo -e "  ${YELLOW}--folder <path>${RESET}   Target folder for downloads (default: downloaded)"
   echo -e "  ${YELLOW}--only-videos${RESET}      Only download videos and GIFs"
   echo -e "  ${YELLOW}--only-images${RESET}      Only download images"
+  echo -e "  ${YELLOW}--thumbnail${RESET}        Download thumbnails instead of full images"
   echo -e "  ${YELLOW}--cache-hash${RESET}       Check for existing hashes in $CACHE_FILE"
   echo -e "  ${YELLOW}--api-key <key>${RESET}    Set API key for the selected site"
   echo -e "  ${YELLOW}--user-id <id>${RESET}     Set User ID for the selected site"

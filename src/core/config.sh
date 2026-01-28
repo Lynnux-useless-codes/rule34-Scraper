@@ -15,6 +15,7 @@ GELBOORU_USER_ID=""
 MAX_THREADS=5
 IMAGE_FOLDER="downloads"
 SITE="rule34"
+DOWNLOAD_THUMBNAILS=false
 
 # Initialize optional variables
 TAGS=""
@@ -29,6 +30,7 @@ CLI_FOLDER_PROVIDED="false"
 CLI_API_KEY_PROVIDED="false"
 CLI_USER_ID_PROVIDED="false"
 CLI_SITE_PROVIDED="false"
+CLI_THUMBNAILS_PROVIDED="false"
 
 parse_yaml() {
   local file="$1"
@@ -52,6 +54,7 @@ parse_yaml() {
       "api_key") [[ "$CLI_API_KEY_PROVIDED" == "false" ]] && API_KEY="$value" ;;
       "user_id") [[ "$CLI_USER_ID_PROVIDED" == "false" ]] && USER_ID="$value" ;;
       "site") [[ "$CLI_SITE_PROVIDED" == "false" ]] && SITE="$value" ;;
+      "thumbnails") [[ "$CLI_THUMBNAILS_PROVIDED" == "false" ]] && DOWNLOAD_THUMBNAILS="$value" ;;
       "rule34_api_key") RULE34_API_KEY="$value" ;;
       "rule34_user_id") RULE34_USER_ID="$value" ;;
       "gelbooru_api_key") GELBOORU_API_KEY="$value" ;;

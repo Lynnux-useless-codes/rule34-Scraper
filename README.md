@@ -45,6 +45,7 @@ chmod +x downloader.sh
 - `--amount <count>`: Total number of images to download.
 - `--only-videos`: Only download videos and GIFs.
 - `--only-images`: Only download images (jpg, jpeg, png, gif).
+- `--thumbnail`: Download thumbnails instead of full images.
 - `--cache-hash`: Enable SHA-256 hash checking to skip already downloaded files.
 - `--api-key <key>`: API key for the selected site (e.g., rule34.xxx or gelbooru.com).
 - `--user-id <id>`: User ID for the selected site.

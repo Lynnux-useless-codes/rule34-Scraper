@@ -76,7 +76,13 @@ process_posts() {
     local post_id
     local file_url
     post_id=$(echo "$post" | jq -r '.id')
-    file_url=$(echo "$post" | jq -r '.file_url')
+    
+    if [[ "$DOWNLOAD_THUMBNAILS" == "true" ]]; then
+      file_url=$(echo "$post" | jq -r '.preview_url // .thumbnail_url // .file_url')
+      log_debug "Thumbnail requested for post $post_id, using preview_url: $file_url"
+    else
+      file_url=$(echo "$post" | jq -r '.file_url')
+    fi
 
     if [[ -z "$post_id" || "$post_id" == "null" || -z "$file_url" || "$file_url" == "null" ]]; then
        log_warning "Skipping malformed post entry on page $page"
