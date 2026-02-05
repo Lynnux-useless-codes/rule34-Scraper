@@ -48,10 +48,42 @@ _draw_bar() {
   fi
   
   # \r moves cursor to start of line, \033[K clears the line
-  echo -ne "\r\033[K[${bar}] ${percent}% (${current}/${total})"
+  echo -ne "\r\033[K[${bar}] ${percent}% (${current}/${total})" >&2
+}
+
+SPINNER_PID=""
+
+show_spinner() {
+  local msg="${1:-Loading...}"
+  local delay=0.1
+  local spinstr='|/-\'
+  
+  # Hide cursor
+  tput civis
+  
+  (
+    while true; do
+      local temp=${spinstr#?}
+      printf "\r\033[K [%c] %s" "$spinstr" "$msg" >&2
+      spinstr=$temp${spinstr%"$temp"}
+      sleep $delay
+    done
+  ) &
+  SPINNER_PID=$!
+}
+
+stop_spinner() {
+  if [[ -n "$SPINNER_PID" ]]; then
+    kill "$SPINNER_PID" 2>/dev/null
+    wait "$SPINNER_PID" 2>/dev/null || true
+    printf "\r\033[K" >&2 # Clear the line
+    tput cnorm >&2 # Show cursor
+    SPINNER_PID=""
+  fi
 }
 
 finish_progress() {
+  stop_spinner
   echo "" # Use newline to preserve the last progress bar state
   if [[ -f "$PROGRESS_FILE" ]]; then
     rm -f "$PROGRESS_FILE" "$PROGRESS_LOCK"

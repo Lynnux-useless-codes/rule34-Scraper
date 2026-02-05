@@ -148,7 +148,7 @@ if [[ -z "$TAGS" ]]; then
 fi
 
 if [[ -z "$AMOUNT" && -z "$PAGES" ]]; then
-  log_error "Either --amount or --pages must be specified."
+  log_error "Either --amount (use 0 for all) or --pages must be specified."
   exit 1
 fi
 

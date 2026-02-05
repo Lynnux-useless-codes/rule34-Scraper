@@ -62,6 +62,36 @@ handle_file() {
   fi
 }
 
+get_total_count() {
+  local tags="$1"
+  local encoded_tags
+  encoded_tags=$(urlencode "$tags")
+  local url
+  local count="0"
+  
+  case "$SITE" in
+    "rule34"|"safebooru")
+      # Fetch XML version (limit 0 or 1) to get count
+      url=$(get_api_url 0 0 "$encoded_tags" | sed 's/json=1//g')
+      local response
+      response=$(curl -s "$url")
+      count=$(echo "$response" | grep -oP 'count="\K[0-9]+' || echo "0")
+      ;;
+    "gelbooru")
+      url=$(get_api_url 0 0 "$encoded_tags")
+      local response
+      response=$(curl -s "$url")
+      count=$(echo "$response" | jq -r '."@attributes".count // 0')
+      ;;
+    *)
+      # For other sites, we might not be able to get count easily, return 0
+      # and we'll handle the "unlimited" loop instead
+      count="0"
+      ;;
+  esac
+  echo "$count"
+}
+
 process_posts() {
   local response="$1"
   local page="$2"
@@ -101,15 +131,34 @@ process_posts() {
 
     handle_file "$file_url" "$post_id" &
   done < <(extract_posts "$response")
-  wait
+  # Removed wait here to allow pipelined fetching of next page
 }
 
 download_images_by_amount() {
   local tags="$1"
-  local total_limit="$2"
-  local per_page_limit=50
+  local amount="$2"
+  local per_page_limit=100
   local encoded_tags
   encoded_tags=$(urlencode "$tags")
+  local total_limit=0
+
+  if [[ "$amount" == "0" || "$amount" == "-1" || "$amount" == "*" ]]; then
+    if [[ "${VERBOSE:-false}" == "false" ]]; then
+      show_spinner "Calculating total items..."
+    else
+      log_info "Requesting 'All available' items. Calculating total..."
+    fi
+    total_limit=$(get_total_count "$tags")
+    stop_spinner
+    if [[ "$total_limit" -le 0 ]]; then
+      log_warning "Could not determine total count or no results found. Trying to download until empty."
+      total_limit=999999
+    else
+      log_info "Total items found: $total_limit"
+    fi
+  else
+    total_limit="$amount"
+  fi
 
   mkdir -p "$IMAGE_FOLDER"
   
@@ -127,6 +176,9 @@ download_images_by_amount() {
     else
       limit=$per_page_limit
     fi
+
+    # API might have a hard limit (e.g. 100)
+    if (( limit > 100 )); then limit=100; fi
 
     local url
     url=$(get_api_url "$limit" "$((page - 1))" "$encoded_tags")
@@ -152,12 +204,28 @@ download_images_by_amount() {
     fi
 
     log_info "Received response from API (Page $page)"
+    
+    # Check if response is empty (no more posts)
+    local post_count
+    if [[ "$SITE" == "gelbooru" ]]; then
+        post_count=$(echo "$response" | jq -r 'if .post then (.post | length) else 0 end')
+    else
+        post_count=$(echo "$response" | jq -r 'length')
+    fi
+
+    if [[ "$post_count" -eq 0 ]]; then
+      log_info "No more results found. Finishing..."
+      break
+    fi
+
     process_posts "$response" "$page"
 
     total_downloaded=$((total_downloaded + limit))
     ((page++))
   done
   
+  wait # Ensure all background jobs from all pages finish
+
   if [[ "${VERBOSE:-false}" == "false" ]]; then
       finish_progress
   fi
@@ -166,7 +234,7 @@ download_images_by_amount() {
 download_images_by_pages() {
   local tags="$1"
   local end_page="$2"
-  local per_page_limit=50
+  local per_page_limit=100
   local encoded_tags
   encoded_tags=$(urlencode "$tags")
 
@@ -200,6 +268,8 @@ download_images_by_pages() {
     process_posts "$response" "$page"
   done
   
+  wait # Wait for all pages to finish
+
   if [[ "${VERBOSE:-false}" == "false" ]]; then
       finish_progress
   fi

@@ -19,6 +19,7 @@ urlencode() {
     c=${raw:$i:1}
     case $c in
       [a-zA-Z0-9.~_/-]) encoded+=$c ;;
+      " ") encoded+="+" ;;
       *) printf -v encoded '%s%%%02X' "$encoded" "'$c" ;;
     esac
   done
